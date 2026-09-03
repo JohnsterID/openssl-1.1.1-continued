@@ -1035,6 +1035,15 @@ int tls1_enc(SSL *s, SSL3_RECORD *recs, size_t n_recs, int sending)
                 & EVP_CIPH_FLAG_AEAD_CIPHER) {
                 unsigned char *seq;
 
+                /*
+                 * Publicly invalid: the record is shorter than the mandatory
+                 * AEAD overhead. Leave alert handling to the caller so TLS
+                 * reports bad_record_mac and DTLS silently discards the record.
+                 */
+                if (!sending
+                        && reclen[ctr] < s->rlayer.eivlen + s->rlayer.taglen)
+                    return 0;
+
                 seq = sending ? RECORD_LAYER_get_write_sequence(&s->rlayer)
                     : RECORD_LAYER_get_read_sequence(&s->rlayer);
 
