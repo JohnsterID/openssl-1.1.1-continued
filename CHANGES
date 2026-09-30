@@ -7,6 +7,19 @@
  https://github.com/openssl/openssl/commits/ and pick the appropriate
  release branch.
 
+ Changes between 1.1.1zi and 1.1.1zi-jz1 [30 Sep 2026]
+
+ *) Completed the fix for CVE-2025-69419: OPENSSL_uni2utf8() and
+    PKCS12 friendly names now convert BMP strings with characters
+    that need three UTF-8 bytes instead of failing.
+    (CVE-2025-69419)
+    [Bernd Edlinger; carried from openssl-3.0 4191043c36]
+
+ *) Relative CRL distribution point names are computed only when a
+    CRL is checked, not when a certificate's extensions are cached.
+    (CVE-2026-35189)
+    [1.1.1 port of Viktor Dukhovni's c72ae182ca; not reviewed by OpenSSL]
+
  Changes between 1.1.1zh and 1.1.1zi [25 Aug 2026]
 
  *) Fixed heap buffer overflow in CMS key unwrapping.
