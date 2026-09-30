@@ -9,6 +9,7 @@
 
 #include "internal/refcount.h"
 #include <openssl/x509.h>
+#include <openssl/x509v3.h>
 #include <openssl/conf.h>
 
 /* Internal X509 structures and functions: not for application use */
@@ -289,3 +290,6 @@ void x509_init_sig_info(X509 *x);
 
 int x509v3_add_len_value_uchar(const char *name, const unsigned char *value,
                                size_t vallen, STACK_OF(CONF_VALUE) **extlist);
+
+X509_NAME *ossl_dist_point_name_full(const DIST_POINT_NAME *dpn,
+                                     X509_NAME *iname);
