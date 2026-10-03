@@ -17,7 +17,7 @@ or in OpenSSL's public git. The source of several of them is publicly redistribu
 |---|---|
 | `OpenSSL_1_1_1-continued` | OpenSSL's public `OpenSSL_1_1_1-stable` history. Then OpenSSL's own commits after 1.1.1w that are reachable by SHA in `openssl/openssl`, kept unchanged with their original authors and ids (1.1.1x, 1.1.1y and the first 1.1.1za fix). Then one commit per release: 1.1.1za, zb, zd, zf, zg, zh, zi. |
 | `tarball/1.1.1zX` | The release commits on `OpenSSL_1_1_1-continued`. `git archive tarball/1.1.1zX` equals that release's tarball content, file for file. |
-| `1.1.1zi-carry` (default branch) | 1.1.1zi plus the two carried fixes below, plus a distinct version text. |
+| `1.1.1zi-carry` (default branch) | 1.1.1zi plus the six carried fixes below, plus a distinct version text. |
 | `carry/1.1.1zi-jz1` | The tagged carry release. |
 
 1.1.1x, 1.1.1y, 1.1.1zc and 1.1.1ze have no public tarball. Their changes are contained in the next
@@ -31,6 +31,17 @@ available release commit.
 2. **CVE-2026-35189 (relative CRL distribution-point names), a 1.1.1 port.** This is not OpenSSL's code:
    OpenSSL's 1.1.1 fix has no public source. It re-does upstream `c72ae182ca` for 1.1.1 and has not been
    reviewed by OpenSSL.
+3. **CVE-2026-54872 (EC ladder scalar padding), a 1.1.1 backport** of OpenSSL's public 3.4 commit
+   `7d83bc7764` (Igor Ustinov).
+4. **CVE-2026-77696 (constant-time SM2 signing), a 1.1.1 backport** of OpenSSL's public 3.4 commit
+   `419f5cb519` (Igor Ustinov, Viktor Dukhovni).
+5. **CVE-2026-75806 (undersized TLS/DTLS 1.2 AEAD records), a 1.1.1 backport** of OpenSSL's public 3.4
+   commit `5af82fefba` (Daniel Kubec, Mounir Idrassi), with its test.
+6. **CVE-2026-84782 (DTLS retransmission from a stale offset), a 1.1.1 backport** of OpenSSL's public 3.4
+   commit `9f6b34422a` (Ryan Hooper), with its test.
+
+Fixes 3–6 keep their original authors and came after the `carry/1.1.1zi-jz1` tag. OpenSSL's own 1.1.1
+fixes for them are not public, and these backports have not been reviewed by OpenSSL.
 
 Drop each fix once an official 1.1.1 release with public source carries it.
 
