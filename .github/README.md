@@ -83,5 +83,5 @@ advertising clause, are kept unchanged.
 ## Security
 
 - Report issues in OpenSSL's own code to the OpenSSL Project (`openssl-security@openssl.org`).
-- Report issues in the two carried fixes as an issue here.
+- Report issues in the carried fixes as an issue here.
 - There is no security support, embargo access or response-time commitment.
