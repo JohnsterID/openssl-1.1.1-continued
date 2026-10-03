@@ -7,6 +7,28 @@
  https://github.com/openssl/openssl/commits/ and pick the appropriate
  release branch.
 
+ Changes between 1.1.1zi-jz1 and 1.1.1zi-jz2 [3 Oct 2026]
+
+ *) The EC Montgomery ladder pins the tops of the padded scalar and of
+    lambda, so the scalar padding is constant time.
+    (CVE-2026-54872)
+    [1.1.1 port of Igor Ustinov's 7d83bc7764; not reviewed by OpenSSL]
+
+ *) SM2 signing uses constant-time arithmetic on k and the private key.
+    (CVE-2026-77696)
+    [1.1.1 port of Igor Ustinov's 419f5cb519; not reviewed by OpenSSL]
+
+ *) Undersized TLS 1.2 AEAD records are rejected with bad_record_mac
+    before AEAD processing, instead of failing with internal_error (and,
+    in DTLS, tearing the association down).
+    (CVE-2026-75806)
+    [1.1.1 port of Daniel Kubec's 5af82fefba; not reviewed by OpenSSL]
+
+ *) DTLS resets the message offset before retransmitting a handshake
+    message, so a retransmission never reads from a stale offset.
+    (CVE-2026-84782)
+    [1.1.1 port of Ryan Hooper's 9f6b34422a; not reviewed by OpenSSL]
+
  Changes between 1.1.1zi and 1.1.1zi-jz1 [30 Sep 2026]
 
  *) Completed the fix for CVE-2025-69419: OPENSSL_uni2utf8() and
