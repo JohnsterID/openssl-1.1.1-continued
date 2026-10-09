@@ -1,7 +1,7 @@
 # OpenSSL 1.1.1 continued — unofficial
 
 **Not affiliated with, endorsed by, or supported by the OpenSSL Project or the OpenSSL
-Corporation.** "OpenSSL" is their trademark. This repository only republishes their source, plus two
+Corporation.** "OpenSSL" is their trademark. This repository only republishes their source, plus six
 clearly marked fixes, so that the post-1.1.1w 1.1.1 releases can be built, verified and reviewed in git.
 
 OpenSSL 1.1.1 reached end of public support with **1.1.1w** (September 2023). OpenSSL has since issued
@@ -18,45 +18,76 @@ or in OpenSSL's public git. The source of several of them is publicly redistribu
 | `OpenSSL_1_1_1-continued` | OpenSSL's public `OpenSSL_1_1_1-stable` history. Then OpenSSL's own commits after 1.1.1w that are reachable by SHA in `openssl/openssl`, kept unchanged with their original authors and ids (1.1.1x, 1.1.1y and the first 1.1.1za fix). Then one commit per release: 1.1.1za, zb, zd, zf, zg, zh, zi. |
 | `tarball/1.1.1zX` | The release commits on `OpenSSL_1_1_1-continued`. `git archive tarball/1.1.1zX` equals that release's tarball content, file for file. |
 | `1.1.1zi-carry` (default branch) | 1.1.1zi plus the six carried fixes below, plus a distinct version text. |
-| `carry/1.1.1zi-jz1` | The tagged carry release. |
+| `carry/1.1.1zi-jz2` | The current tagged carry release: 1.1.1zi plus all six carried fixes. Signed tag. |
+| `carry/1.1.1zi-jz1` | The previous tagged carry release: 1.1.1zi plus fixes 1 and 2 only. |
+| `tools` | No OpenSSL code: the importer, the upstream watcher, pinned inputs (`releases.json`), keys, the ports audit and `RELEASING.md`. |
 
 1.1.1x, 1.1.1y, 1.1.1zc and 1.1.1ze have no public tarball. Their changes are contained in the next
 available release commit.
 
 ## Carried fixes (on `1.1.1zi-carry` only)
 
-1. **CVE-2025-69419, the alternate fix.** A cherry-pick of upstream `4191043c36` (Bernd Edlinger), keeping
-   its original author. OpenSSL's 1.1.1ze–1.1.1zi contain only the first fix, so `OPENSSL_uni2utf8()`
-   still returns NULL for BMP strings with characters that need three UTF-8 bytes (e.g. U+20AC).
-2. **CVE-2026-35189 (relative CRL distribution-point names), a 1.1.1 port.** This is not OpenSSL's code:
-   OpenSSL's 1.1.1 fix has no public source. It re-does upstream `c72ae182ca` for 1.1.1 and has not been
-   reviewed by OpenSSL.
-3. **CVE-2026-54872 (EC ladder scalar padding), a 1.1.1 backport** of OpenSSL's public 3.4 commit
-   `7d83bc7764` (Igor Ustinov).
-4. **CVE-2026-77696 (constant-time SM2 signing), a 1.1.1 backport** of OpenSSL's public 3.4 commit
-   `419f5cb519` (Igor Ustinov, Viktor Dukhovni).
-5. **CVE-2026-75806 (undersized TLS/DTLS 1.2 AEAD records), a 1.1.1 backport** of OpenSSL's public 3.4
-   commit `5af82fefba` (Daniel Kubec, Mounir Idrassi), with its test.
-6. **CVE-2026-84782 (DTLS retransmission from a stale offset), a 1.1.1 backport** of OpenSSL's public 3.4
-   commit `9f6b34422a` (Ryan Hooper), with its test.
+| # | Fix | Upstream source | Status | Independent comparison | Tests | Reference router build (`no-dtls no-sm2`, RSA certificates) |
+|---|---|---|---|---|---|---|
+| 1 | CVE-2025-69419, the alternate fix | cherry-pick of `4191043c36` (Bernd Edlinger), original author kept | OpenSSL's own code (3.0 branch) | — | `test_internal_carry` | reachable (BMP string and PKCS#12 friendlyName conversion) |
+| 2 | CVE-2026-35189, relative CRL distribution-point names | re-done from `c72ae182ca` | **unreviewed 1.1.1 backport** | cPanel/CloudLinux `ea-openssl11` has its own 1.1.1 port | `test_internal_carry` | reachable (certificate extension caching) |
+| 3 | CVE-2026-54872, EC ladder scalar padding | backport of 3.4 `7d83bc7764` (Igor Ustinov) | **unreviewed 1.1.1 backport** | cPanel/CloudLinux; Ubuntu jammy 3.0.2 port; [audit](https://github.com/JohnsterID/openssl-1.1.1-continued/blob/tools/audit/ports-1.1.1zi.md) | no upstream test; `test_ec`, `test_ecdsa` | code present; low exposure (no ECDSA or SM2 signing key) |
+| 4 | CVE-2026-77696, constant-time SM2 signing | backport of 3.4 `419f5cb519` (Igor Ustinov, Viktor Dukhovni) | **unreviewed 1.1.1 backport** | cPanel/CloudLinux; Ubuntu jammy 3.0.2 port; [audit](https://github.com/JohnsterID/openssl-1.1.1-continued/blob/tools/audit/ports-1.1.1zi.md) | no upstream test; `test_internal_sm2` | not compiled (`no-sm2`) |
+| 5 | CVE-2026-75806, undersized TLS/DTLS 1.2 AEAD records | backport of 3.4 `5af82fefba` (Daniel Kubec, Mounir Idrassi) | **unreviewed 1.1.1 backport** | cPanel/CloudLinux; Ubuntu jammy 3.0.2 port; [audit](https://github.com/JohnsterID/openssl-1.1.1-continued/blob/tools/audit/ports-1.1.1zi.md) | upstream `recordlentest` cases (fail without the fix) | TLS alert code only (DTLS compiled out) |
+| 6 | CVE-2026-84782, DTLS retransmission from a stale offset | backport of 3.4 `9f6b34422a` (Ryan Hooper) | **unreviewed 1.1.1 backport** | cPanel/CloudLinux; Ubuntu jammy 3.0.2 port; [audit](https://github.com/JohnsterID/openssl-1.1.1-continued/blob/tools/audit/ports-1.1.1zi.md) | upstream `dtlstest` cases (fail without the fix) | not reachable (`no-dtls`) |
 
-Fixes 3–6 keep their original authors and came after the `carry/1.1.1zi-jz1` tag. OpenSSL's own 1.1.1
-fixes for them are not public, and these backports have not been reviewed by OpenSSL.
-
-Drop each fix once an official 1.1.1 release with public source carries it.
+- **"Unreviewed 1.1.1 backport"** means that OpenSSL has not reviewed this code. OpenSSL's own 1.1.1 fixes
+  for CVE-2026-35189, -54872, -77696, -75806 and -84782 are in its 1.1.1zj, whose source is not public.
+  These backports **will be replaced by OpenSSL's code when 1.1.1zj source is public**: the `tools`
+  watcher checks Amazon Linux 2 for an `openssl11` 1.1.1zj source RPM every week.
+- Fixes 3–6 keep their original authors. They are in `carry/1.1.1zi-jz2`, not in `carry/1.1.1zi-jz1`.
+- Where you can, build with **`no-dtls no-sm2`**: that removes the code of fixes 4 and 6 and most of 5.
+- Drop each fix once an official 1.1.1 release with public source carries it.
 
 ## Version and ABI
 
-The carry release reports `OpenSSL 1.1.1zi-jz1  30 Sep 2026`, so it can't be mistaken for OpenSSL's own
-1.1.1zi. `OPENSSL_VERSION_NUMBER` (0x1010122fL), the SONAMEs (`libssl.so.1.1`, `libcrypto.so.1.1`) and
-the symbol versions are unchanged, so it's a drop-in for 1.1.1 consumers.
+The carry release reports `OpenSSL 1.1.1zi-jz2  3 Oct 2026` (`carry/1.1.1zi-jz1` reported
+`OpenSSL 1.1.1zi-jz1  30 Sep 2026`), so it can't be mistaken for OpenSSL's own 1.1.1zi.
+`OPENSSL_VERSION_NUMBER` (0x1010122fL), the SONAMEs (`libssl.so.1.1`, `libcrypto.so.1.1`) and the symbol
+versions are unchanged, so it's a drop-in for 1.1.1 consumers.
 
-## How to verify the release commits
+## Tested
 
-Each release tree comes from an Amazon Linux 2 `openssl11` source RPM. Their signatures check against
-Amazon's key `99E6 17FE 5DB5 27C0 D8BD 5F8E 11CF 1F95 C87F 5B1A`, which was fetched from a public keyserver
-and is not independently anchored. OpenSSL publishes no signatures or checksums for these releases.
-1.1.1za and 1.1.1zf are Amazon repacks: same content, different archive bytes.
+- `make test` on x86_64 (gcc 13): the release tree passes 160 recipes / 2666 tests; with the regression
+  tests (`test_internal_carry`) 161 / 2667.
+- 32-bit ARM (cortex-a9, soft-float), the router's Configure options, under qemu-user: no failure
+  beyond two cipher-order tests that the device's ChaCha20-first default changes in every 1.1.1 build.
+- On hardware: the jz2 libraries built from `carry/1.1.1zi-jz2` with the router recipe ran on a spare
+  DJA0231 router (BCM63138, 3 Oct 2026): TLS 1.2/1.3 with RSA, P-384 and P-521, its web GUI (nginx),
+  and ten consumers restarted one by one, with no crash or reboot.
+- CI (`carry-ci.yml`) builds and tests the default and the router configurations on Ubuntu 24.04 and
+  22.04, an AddressSanitizer + UndefinedBehaviorSanitizer build, and the ARM build under qemu. Its runs
+  are in the Actions tab.
+
+## How to verify
+
+- **The release tag:** `git tag -v carry/1.1.1zi-jz2`, with an `allowed_signers` file holding the key
+  below (`git config gpg.ssh.allowedSignersFile allowed_signers`). The `tools` branch holds the file.
+  - Signing key (SSH, ed25519): `SHA256:pNKgXGMFPyNsg5EwoECScta8iEzzAENElEkGvS/ZugU`
+- **The release tarball:** the release asset `openssl-1.1.1zi-jz2.tar.gz` is
+  `git archive --format=tar --prefix=openssl-1.1.1zi-jz2/ carry/1.1.1zi-jz2 | gzip -n -9`, sha256
+  `1e56d48b07410df3cad20a9ab6b0de0caecd832fa4b059a9065aa95ec97f9b75`; `SHA256SUMS.sig` signs its
+  checksum. GitHub's automatic "Source code" archives use another prefix and aren't byte-stable.
+- **The release commits:** each tree comes from an Amazon Linux 2 `openssl11` source RPM. Their
+  signatures check against Amazon's key `99E6 17FE 5DB5 27C0 D8BD 5F8E 11CF 1F95 C87F 5B1A`, which was
+  fetched from a public keyserver and is not independently anchored. OpenSSL publishes no signatures or
+  checksums for these releases. 1.1.1za and 1.1.1zf are Amazon repacks: same content, different archive
+  bytes. The `tools` branch re-checks all of it:
+  ```
+  git fetch origin tools && git worktree add ../tools tools && cd ../tools
+  python3 tools/import_release.py rpm-verify SRPM --key keys/amazon-linux-2-99E617FE5DB527C0D8BD5F8E11CF1F95C87F5B1A.asc
+  python3 tools/import_release.py tree-check --git-archive REPO tarball/1.1.1zi openssl-1.1.1zi.tar.gz
+  MIRROR_DL=dl MIRROR_REPO=/tmp/reimport python3 tools/build_mirror.py --result reimport.json
+  git ls-remote https://github.com/JohnsterID/openssl-1.1.1-continued.git > ls-remote.txt
+  python3 tools/build_mirror.py --compare reimport.json --refs ls-remote.txt
+  ```
+  A re-import from the source RPMs into an empty repository gives the same commit ids as
+  `OpenSSL_1_1_1-continued` and the `tarball/*` tags. `releases.json` pins every input:
 
 | Release | Source RPM | RPM sha256 | Tarball sha256 |
 |---|---|---|---|
@@ -69,11 +100,15 @@ and is not independently anchored. OpenSSL publishes no signatures or checksums 
 | 1.1.1zh | `openssl11-1.1.1zh-1.amzn2.0.1.src.rpm` | `75a308ebd087c03400ca0885741d4f278a980d17f7e515582a5966499e1161be` | `89ade77ad61cb264ad5f2a67caf18b291cb4fce22f608c834a6b0e091c599fc2` |
 | 1.1.1zi | `openssl11-1.1.1zi-1.amzn2.0.1.src.rpm` | `5790d70cd5f66704ec6acb14119610cc3d522255f7700e16ad7d3d721f543fef` | `64f0f77354f10a8e5012e44887a7af82581a57378cfc446fc0da1fa74c1dae5a` |
 
-To check a release, extract the tarball from the RPM, then run
-`git archive --format=tar tarball/1.1.1zX | tar -t` and compare the file contents with the tarball.
-
 This file lives in `.github/`, which OpenSSL's `.gitattributes` export-ignores, so it doesn't change any
 `git archive` output or build.
+
+## Known limits
+
+- OpenSSL's 1.1.1zj may contain fixes that it hasn't announced; nobody outside its support customers
+  can check.
+- The CVE-2026-7383 follow-up `aace9bcf2e` is missing, as in OpenSSL's own 1.1.1zi.
+- No FIPS module, no support, no embargo access. One maintainer, best effort.
 
 ## Licence
 
@@ -82,6 +117,5 @@ advertising clause, are kept unchanged.
 
 ## Security
 
-- Report issues in OpenSSL's own code to the OpenSSL Project (`openssl-security@openssl.org`).
-- Report issues in the carried fixes as an issue here.
-- There is no security support, embargo access or response-time commitment.
+See [SECURITY.md](SECURITY.md) for where to report what. There is no security support, embargo access or
+response-time commitment.
