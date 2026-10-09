@@ -1,0 +1,116 @@
+---
+# CI for the 1.1.1*-carry release branches of this fork. It replaces OpenSSL's six 1.1.1 workflows, which
+# need OpenSSL's self-hosted runners and private actions (see .github/workflows/README.md).
+name: carry CI
+
+on:
+  push:
+    branches: [ci, '1.1.1*-carry']
+  pull_request:
+    branches: ['1.1.1*-carry']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Configure options of the router build (scripts/build_openssl_shared.sh in the lab):
+  # the options recovered from the stock 1.1.1g-2 libraries, including no-dtls and no-sm2.
+  DEVICE_OPTIONS: >-
+    shared no-blake2 -DOPENSSL_PREFER_CHACHA_OVER_GCM no-async no-ec2m no-aria no-sm2 no-sm3
+    no-sm4 no-camellia no-idea no-seed no-mdc2 no-whirlpool no-rfc3779 -DOPENSSL_SMALL_FOOTPRINT
+    no-afalgeng no-hw-padlock no-gost no-dtls no-comp no-nextprotoneg no-srp
+    --with-rand-seed=devrandom
+  # Any carry release: OpenSSL 1.1.1zX-jzN, then two spaces and the date.
+  VERSION_RE: '^OpenSSL 1\.1\.1z[a-z]-jz[0-9]+  '
+
+jobs:
+  native:
+    name: ${{ matrix.os }} ${{ matrix.config }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # ubuntu-22.04 stays until GitHub deprecates it; then 24.04 and 26.04.
+        os: [ubuntu-24.04, ubuntu-22.04]
+        config: [default, device]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: config
+        run: |
+          if [ "${{ matrix.config }}" = device ]; then
+            # shellcheck disable=SC2086
+            ./config $DEVICE_OPTIONS
+          else
+            ./config --strict-warnings
+          fi
+          perl configdata.pm --dump
+      - name: make
+        run: make -s -j4
+      - name: version text
+        run: |
+          util/shlib_wrap.sh apps/openssl version -a
+          util/shlib_wrap.sh apps/openssl version | grep -E "$VERSION_RE"
+      - name: make test
+        run: make test
+      - name: carried-fix regression tests (verbose)
+        run: make test TESTS=test_internal_carry V=1
+
+  asan:
+    # AddressSanitizer + UndefinedBehaviorSanitizer (no recovery), as OpenSSL's own 1.1.1 CI ran it.
+    name: ubuntu-24.04 asan ubsan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: config
+        run: |
+          ./config --debug enable-asan enable-ubsan enable-rc5 enable-md2 enable-ec_nistp_64_gcc_128 \
+            -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+          perl configdata.pm --dump
+      - name: make
+        run: make -s -j4
+      - name: make test
+        run: make test OPENSSL_TEST_RAND_ORDER=0
+
+  arm-qemu:
+    # 32-bit ARM, soft-float EABI, cortex-a9: the router's ABI and CPU, under qemu-user.
+    name: armel cortex-a9 device options (qemu)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      ARM_TESTS: >-
+        test_internal_asn1 test_internal_carry test_internal_ec test_internal_x509
+        test_asn1_* test_bn test_dh test_rsa test_ec test_ecdsa test_evp test_evp_extra
+        test_rand test_x509 test_crl test_verify test_pkcs12 test_recordlen test_sslrecords
+        test_tls13* test_ssl_new
+    steps:
+      - name: install cross toolchain and qemu
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install gcc-arm-linux-gnueabi libc6-dev-armel-cross qemu-user-binfmt
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: config
+        run: |
+          # shellcheck disable=SC2086
+          ./Configure linux-armv4 --cross-compile-prefix=arm-linux-gnueabi- \
+            $DEVICE_OPTIONS -mcpu=cortex-a9 -marm -mfloat-abi=soft
+          perl configdata.pm --dump
+      - name: make
+        run: make -s -j4
+      - name: make test (subset)
+        env:
+          QEMU_LD_PREFIX: /usr/arm-linux-gnueabi
+          QEMU_CPU: cortex-a9
+        run: make test TESTS="$ARM_TESTS"
