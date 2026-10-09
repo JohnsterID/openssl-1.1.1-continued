@@ -1,0 +1,220 @@
+{
+ "schema": "openssl-upstream-watch/1",
+ "sources": {
+  "al2": {
+   "info": {
+    "mirror": "https://cdn.amazonlinux.com/2/core/2.0/SRPMS/3fc0e1970395a5f8c19fb58cd532a97443be51797a52048a8971cd802aecec02/",
+    "newest": "1.1.1zi-1.amzn2.0.1",
+    "newest_location": "../../../../../blobstore/5790d70cd5f66704ec6acb14119610cc3d522255f7700e16ad7d3d721f543fef/openssl11-1.1.1zi-1.amzn2.0.1.src.rpm",
+    "newest_sha256": "5790d70cd5f66704ec6acb14119610cc3d522255f7700e16ad7d3d721f543fef",
+    "primary_sha256": "62768b09f1c9e060e32a502eac69000915abbe5a6f48da1ae6be0ef69d37a997",
+    "repomd_revision": 1790634640
+   },
+   "key": {
+    "openssl11": [
+     "1.1.1c-15.amzn2.0.1",
+     "1.1.1c-15.amzn2.0.2",
+     "1.1.1c-3.amzn2.0.1",
+     "1.1.1g-12.amzn2.0.1",
+     "1.1.1g-12.amzn2.0.11",
+     "1.1.1g-12.amzn2.0.13",
+     "1.1.1g-12.amzn2.0.14",
+     "1.1.1g-12.amzn2.0.15",
+     "1.1.1g-12.amzn2.0.16",
+     "1.1.1g-12.amzn2.0.18",
+     "1.1.1g-12.amzn2.0.19",
+     "1.1.1g-12.amzn2.0.2",
+     "1.1.1g-12.amzn2.0.20",
+     "1.1.1g-12.amzn2.0.21",
+     "1.1.1g-12.amzn2.0.22",
+     "1.1.1g-12.amzn2.0.23",
+     "1.1.1g-12.amzn2.0.3",
+     "1.1.1g-12.amzn2.0.4",
+     "1.1.1g-12.amzn2.0.5",
+     "1.1.1g-12.amzn2.0.6",
+     "1.1.1g-12.amzn2.0.7",
+     "1.1.1g-12.amzn2.0.8",
+     "1.1.1g-12.amzn2.0.9",
+     "1.1.1za-1.amzn2.0.1",
+     "1.1.1zb-1.amzn2.0.1",
+     "1.1.1zd-1.amzn2.0.1",
+     "1.1.1zf-1.amzn2.0.1",
+     "1.1.1zg-1.amzn2.0.1",
+     "1.1.1zh-1.amzn2.0.1",
+     "1.1.1zi-1.amzn2.0.1"
+    ]
+   }
+  },
+  "cpanel": {
+   "info": {
+    "date": "2026-10-01T20:55:10Z",
+    "subject": "EA-13575: Patch ea-openssl11 for CVE-2026-84782, CVE-2026-35189, CVE-2026-54872, CVE-2026-75806, CVE-2026-77696"
+   },
+   "key": {
+    "newest_commit": "c0bb148e692b5c334d3b08fa3fa12edeedbbd413"
+   }
+  },
+  "fork": {
+   "info": {
+    "count": 11,
+    "heads": {
+     "HEAD": "81263a4906c7d0a3c51daef556b3d772b4082253",
+     "refs/heads/1.1.1zi-carry": "81263a4906c7d0a3c51daef556b3d772b4082253"
+    },
+    "note": "reviewed 9 Oct 2026; expects the signed carry/1.1.1zi-jz2 tag of U5 (peeled d952ab0f)"
+   },
+   "key": {
+    "refs": {
+     "refs/heads/OpenSSL_1_1_1-continued": "fb26261ef6aa8f1b3867f1a32e9a2a0d80057051",
+     "refs/tags/carry/1.1.1zi-jz1": "b87631dacfb74cc044ba0955e3f0812b191e6450",
+     "refs/tags/carry/1.1.1zi-jz2": "d952ab0f7d08d52ce12ee3177fe2b503e8263806",
+     "refs/tags/tarball/1.1.1za": "071b845c8896455fd5f4071840b2bb2a44c287d4",
+     "refs/tags/tarball/1.1.1zb": "47f2872e7d1d47b8e0cb895b637d24790bbf3eb4",
+     "refs/tags/tarball/1.1.1zd": "b5c6edcf86eb59aa8362eb0822f07de422b29f6a",
+     "refs/tags/tarball/1.1.1zf": "c52850a0a515e28b135eeac61d1bc73d3604e775",
+     "refs/tags/tarball/1.1.1zg": "9ac70d107bc7675e41b3f5542bc91eb47e9a4fac",
+     "refs/tags/tarball/1.1.1zh": "6f1312d2af4ec179f3d6d2e815d8cd8fe021fdb5",
+     "refs/tags/tarball/1.1.1zi": "fb26261ef6aa8f1b3867f1a32e9a2a0d80057051"
+    }
+   }
+  },
+  "kzalewski": {
+   "info": {
+    "default_branch": "master"
+   },
+   "key": {
+    "pushed_at": "2026-06-16T11:48:16Z",
+    "tags": [
+     "1.1.1w",
+     "1.1.1x",
+     "1.1.1y",
+     "1.1.1za",
+     "1.1.1zb",
+     "1.1.1zb_p1",
+     "1.1.1zb_p2",
+     "1.1.1zb_p3",
+     "1.1.1zd",
+     "1.1.1ze",
+     "1.1.1zg",
+     "1.1.1zh"
+    ]
+   }
+  },
+  "secadv": {
+   "info": {
+    "count": 107,
+    "names_1_1_1": true
+   },
+   "key": {
+    "newest": "20260929.txt",
+    "sha256": "2a6766a213b2dac48b4666aa54c39dbe3af96f73444081a4a25c1e3dc496aeb9"
+   }
+  },
+  "vulns111": {
+   "info": {
+    "cve_count": 64,
+    "newest_named": "1.1.1zj"
+   },
+   "key": {
+    "cves": [
+     "CVE-2016-0701",
+     "CVE-2018-0734",
+     "CVE-2018-0735",
+     "CVE-2019-1543",
+     "CVE-2019-1547",
+     "CVE-2019-1549",
+     "CVE-2019-1551",
+     "CVE-2019-1552",
+     "CVE-2019-1563",
+     "CVE-2020-1967",
+     "CVE-2020-1971",
+     "CVE-2021-3449",
+     "CVE-2021-3450",
+     "CVE-2021-3711",
+     "CVE-2021-3712",
+     "CVE-2021-4160",
+     "CVE-2021-23840",
+     "CVE-2021-23841",
+     "CVE-2022-0778",
+     "CVE-2022-1292",
+     "CVE-2022-2068",
+     "CVE-2022-2097",
+     "CVE-2022-4304",
+     "CVE-2022-4450",
+     "CVE-2023-0215",
+     "CVE-2023-0286",
+     "CVE-2023-0464",
+     "CVE-2023-0465",
+     "CVE-2023-0466",
+     "CVE-2023-2650",
+     "CVE-2023-3446",
+     "CVE-2023-3817",
+     "CVE-2023-4807",
+     "CVE-2023-5678",
+     "CVE-2024-0727",
+     "CVE-2024-2511",
+     "CVE-2024-4741",
+     "CVE-2024-5535",
+     "CVE-2024-9143",
+     "CVE-2024-13176",
+     "CVE-2025-9230",
+     "CVE-2025-68160",
+     "CVE-2025-69418",
+     "CVE-2025-69419",
+     "CVE-2025-69420",
+     "CVE-2025-69421",
+     "CVE-2026-7383",
+     "CVE-2026-9076",
+     "CVE-2026-22795",
+     "CVE-2026-22796",
+     "CVE-2026-28387",
+     "CVE-2026-28388",
+     "CVE-2026-28389",
+     "CVE-2026-28390",
+     "CVE-2026-34180",
+     "CVE-2026-35189",
+     "CVE-2026-42766",
+     "CVE-2026-45447",
+     "CVE-2026-54872",
+     "CVE-2026-54874",
+     "CVE-2026-63072",
+     "CVE-2026-75806",
+     "CVE-2026-77696",
+     "CVE-2026-84782"
+    ],
+    "versions": [
+     "1.1.1a",
+     "1.1.1c",
+     "1.1.1d",
+     "1.1.1e",
+     "1.1.1f",
+     "1.1.1g",
+     "1.1.1h",
+     "1.1.1i",
+     "1.1.1j",
+     "1.1.1k",
+     "1.1.1l",
+     "1.1.1m",
+     "1.1.1n",
+     "1.1.1o",
+     "1.1.1p",
+     "1.1.1q",
+     "1.1.1t",
+     "1.1.1u",
+     "1.1.1v",
+     "1.1.1w",
+     "1.1.1x",
+     "1.1.1y",
+     "1.1.1za",
+     "1.1.1zb",
+     "1.1.1zd",
+     "1.1.1ze",
+     "1.1.1zg",
+     "1.1.1zh",
+     "1.1.1zi",
+     "1.1.1zj"
+    ]
+   }
+  }
+ }
+}

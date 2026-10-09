@@ -1,0 +1,51 @@
+{
+ "note": "The reference patches of audit/ports-1.1.1zi.md. They are third-party files and are not copied here; fetch them from these sources and check the sha256.",
+ "ours": "patches 0003-0006 = the commits between carry/1.1.1zi-jz1 and the jz2 version commit d952ab0f on 1.1.1zi-carry",
+ "cpanel": {
+  "repository": "https://github.com/CpanelInc/ea-openssl11",
+  "commit": "c0bb148e692b5c334d3b08fa3fa12edeedbbd413",
+  "files": {
+   "openssl-1.1.1w-cve-2026-54872.patch": "8bd94ea9f6eea9710f74de3d2920151a162dc850912a533164a3e9c82297fd20",
+   "openssl-1.1.1w-cve-2026-77696.patch": "ccbd7dec290a56b9dea566ef73a78f5832c82fb8aa022d3ed7121127c9f4bae9",
+   "openssl-1.1.1w-cve-2026-75806.patch": "b44075bf749b6a9f2a0b9a50db77f7c19b190495f66cf4656061a884fa605795",
+   "openssl-1.1.1w-cve-2026-84782.patch": "dfdcd29b7c512a788608885c49ea76d00460f01e81678d90388b73129dbe7303"
+  },
+  "url_prefix": "https://raw.githubusercontent.com/CpanelInc/ea-openssl11/c0bb148e692b5c334d3b08fa3fa12edeedbbd413/SOURCES/"
+ },
+ "ubuntu-3.0.2": {
+  "source": "Ubuntu jammy openssl 3.0.2-0ubuntu1.30 (Launchpad)",
+  "debian_tar": "openssl_3.0.2-0ubuntu1.30.debian.tar.xz",
+  "debian_tar_sha256": "b2f4d75e1eba248397d8e4f4a029195ec3bb0e971b2e975594115a1c79b31c47",
+  "files": [
+   "debian/patches/CVE-2026-54872-pre1.patch",
+   "debian/patches/CVE-2026-54872.patch",
+   "debian/patches/CVE-2026-77696.patch",
+   "debian/patches/CVE-2026-75806.patch",
+   "debian/patches/CVE-2026-84782.patch"
+  ]
+ },
+ "upstream-3.4": {
+  "repository": "https://github.com/openssl/openssl",
+  "commits": {
+   "CVE-2026-54872": "7d83bc7764999dfd91b83b4f0815b45390422afd",
+   "CVE-2026-77696": "419f5cb519721dceed393dbc524d79e487c72e64",
+   "CVE-2026-75806": "5af82fefbaf2b5fec2fc0e1d87f112844902f01d",
+   "CVE-2026-84782": "9f6b34422af7eb5dac61322e33dac1ae989fa628",
+   "value_barrier_bn (include/internal/constant_time.h only)": "aaa1bda7187c8d920cf9e426c2cf8ec7c1c65576"
+  },
+  "how": "git format-patch -1 <commit>; for aaa1bda718: git show <commit> -- include/internal/constant_time.h"
+ },
+ "path_map": {
+  "0005": {
+   "upstream-3.4": {
+    "ssl/record/ssl3_record.c": "ssl/record/methods/tls1_meth.c"
+   }
+  }
+ },
+ "aliases": {
+  "0005": {
+   "EVP_CIPHER_get_mode": "EVP_CIPHER_mode",
+   "EVP_CIPHER_get_iv_length": "EVP_CIPHER_iv_length"
+  }
+ }
+}

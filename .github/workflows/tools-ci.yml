@@ -1,0 +1,80 @@
+---
+# CI for the tools branch. Read-only towards third parties: it downloads pinned inputs and checks them.
+name: tools CI
+
+on:
+  push:
+    branches: [tools]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: unit tests
+        run: python3 -m unittest discover -s tests -v
+      - name: shellcheck
+        run: shellcheck tools/provenance.sh
+      - name: watcher state parses
+        run: python3 -I -c 'import json; s = json.load(open("watch-state.json")); assert s["schema"] == "openssl-upstream-watch/1"'
+
+  provenance:
+    # Every pinned input from its source, RPM and GPG signatures, tree-check of every tarball/* tag,
+    # a re-import from scratch compared with the published ids, and the carry release asset re-archived.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: provenance (full)
+        run: tools/provenance.sh --full
+
+  abi-repro:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        ref: [carry/1.1.1zi-jz2, tarball/1.1.1zi]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ref: ${{ matrix.ref }}
+          path: a
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          repository: openssl/openssl
+          ref: OpenSSL_1_1_1w
+          path: w
+          persist-credentials: false
+      - name: export tables unchanged since 1.1.1w
+        run: cmp a/util/libcrypto.num w/util/libcrypto.num && cmp a/util/libssl.num w/util/libssl.num
+      - name: two clean builds are bit-identical
+        # Same absolute path on purpose: OpenSSL 1.1.1 embeds its compiler flags (OPENSSL_CFLAGS), so a
+        # -ffile-prefix-map with the build path would itself differ.
+        run: |
+          set -euo pipefail
+          SOURCE_DATE_EPOCH=$(git -C a log -1 --format=%ct)
+          export SOURCE_DATE_EPOCH
+          for n in 1 2; do
+            rm -rf /tmp/build && mkdir -p /tmp/build "/tmp/out$n"
+            git -C a archive --prefix=src/ HEAD | tar -x -C /tmp/build
+            (cd /tmp/build/src && ./config shared && make -s -j4 build_libs)
+            strip --strip-all -o "/tmp/out$n/libcrypto.so.1.1" /tmp/build/src/libcrypto.so.1.1
+            strip --strip-all -o "/tmp/out$n/libssl.so.1.1" /tmp/build/src/libssl.so.1.1
+          done
+          cmp /tmp/out1/libcrypto.so.1.1 /tmp/out2/libcrypto.so.1.1
+          cmp /tmp/out1/libssl.so.1.1 /tmp/out2/libssl.so.1.1

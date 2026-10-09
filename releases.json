@@ -1,0 +1,143 @@
+{
+ "schema": 2,
+ "note": "Pins for every imported release and every carry release of JohnsterID/openssl-1.1.1-continued. A tarball's content (not its bytes) is what an import commits; tarball_sha256 is the hash of the file as extracted from the pinned source RPM.",
+ "keys": {
+  "amazon_linux_2": "99E617FE5DB527C0D8BD5F8E11CF1F95C87F5B1A",
+  "openssl_1_1_1w": "EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5"
+ },
+ "al2_srpm_base": "https://cdn.amazonlinux.com/blobstore/",
+ "al2_repo_mirrorlist": "https://cdn.amazonlinux.com/2/core/latest/SRPMS/mirror.list",
+ "al2_mirror_recorded_in_imports": "https://cdn.amazonlinux.com/2/core/2.0/SRPMS/4f8fa06cd2aae03f75376d4f686e3f2d75ccd73ade02131072abdefd9ce64bbf/",
+ "al2_mirror_note": "The import commit messages name the SRPMS path that mirror.list gave on 30 Sep 2026; it is part of those commits and stays. Downloads use the content-addressed blobstore URL (al2_srpm_base + srpm_sha256 + '/' + srpm), and new releases are found by resolving mirror.list on every run.",
+ "upstream": {
+  "OpenSSL_1_1_1w": "e04bd3433fd84e1861bf258ea37928d9845e6a86",
+  "OpenSSL_1_1_1-stable": "b372b1f76450acdfed1e2301a39810146e28b02c",
+  "public_tip": "b78ec0824da857223486660177d3b1f255c65d87",
+  "carry_0001_upstream": "4191043c36f1a50c717a2d0075fc6f3b9bc0afc5"
+ },
+ "releases": [
+  {
+   "version": "1.1.1w",
+   "source": "https://www.openssl.org/source/openssl-1.1.1w.tar.gz",
+   "signature": "openssl-1.1.1w.tar.gz.asc",
+   "tarball": "openssl-1.1.1w.tar.gz",
+   "tarball_sha256": "cf3098950cb4d853ad95c0841f1f9c6d3dc102dccfcacd521d93925208b76ac8"
+  },
+  {
+   "version": "1.1.1za",
+   "srpm": "openssl11-1.1.1za-1.amzn2.0.1.src.rpm",
+   "srpm_sha256": "c63113952dd1fddf2b56fe297c721fda92bb35859ff1a2715da56fa26bbb93cb",
+   "tarball": "openssl-1.1.1za.tar.xz",
+   "tarball_sha256": "d3a4439692dc9c9a828252b10dd85502b5b9bc9ab1ead54721e0bd1f6a72c074",
+   "repacked_by_amazon": true
+  },
+  {
+   "version": "1.1.1zb",
+   "srpm": "openssl11-1.1.1zb-1.amzn2.0.1.src.rpm",
+   "srpm_sha256": "3b3619602474b10371e0355930c769bb048767966febeda0080e9839b3913180",
+   "tarball": "openssl-1.1.1zb.tar.gz",
+   "tarball_sha256": "f17cf13df642e45809fd9b635fed5cde9e0b95f64b1a0d0d4874b8208cb661ff"
+  },
+  {
+   "version": "1.1.1zd",
+   "srpm": "openssl11-1.1.1zd-1.amzn2.0.1.src.rpm",
+   "srpm_sha256": "cd2747ed6a640eb6668c5b99f029de97b347b97520e9be72b4e1f6ae90e92056",
+   "tarball": "openssl-1.1.1zd.tar.gz",
+   "tarball_sha256": "c1d619a8c61306d373b5f5b50a1939c8238f7c8e38cd6b45596308f23194945d"
+  },
+  {
+   "version": "1.1.1zf",
+   "srpm": "openssl11-1.1.1zf-1.amzn2.0.1.src.rpm",
+   "srpm_sha256": "49c4e7ee406c755789799665d0e87aabb9c275806ec694139b65a03137e30879",
+   "tarball": "openssl-1.1.1zf.tar.gz",
+   "tarball_sha256": "8bd7a2e78d2404485c4a6e9db78ccdcbd552c30663b43000763a898624f58bf9",
+   "repacked_by_amazon": true
+  },
+  {
+   "version": "1.1.1zg",
+   "srpm": "openssl11-1.1.1zg-1.amzn2.0.1.src.rpm",
+   "srpm_sha256": "b565c944c4d9e25c251b24ff287ab558b22d30d39acbb28d4204cd27c2b944a6",
+   "tarball": "openssl-1.1.1zg.tar.gz",
+   "tarball_sha256": "8823d2c45550819e1618f704a384cf79698cbffb3884e2760935bdffbc3b2270"
+  },
+  {
+   "version": "1.1.1zh",
+   "srpm": "openssl11-1.1.1zh-1.amzn2.0.1.src.rpm",
+   "srpm_sha256": "75a308ebd087c03400ca0885741d4f278a980d17f7e515582a5966499e1161be",
+   "tarball": "openssl-1.1.1zh.tar.gz",
+   "tarball_sha256": "89ade77ad61cb264ad5f2a67caf18b291cb4fce22f608c834a6b0e091c599fc2"
+  },
+  {
+   "version": "1.1.1zi",
+   "srpm": "openssl11-1.1.1zi-1.amzn2.0.1.src.rpm",
+   "srpm_sha256": "5790d70cd5f66704ec6acb14119610cc3d522255f7700e16ad7d3d721f543fef",
+   "tarball": "openssl-1.1.1zi.tar.gz",
+   "tarball_sha256": "64f0f77354f10a8e5012e44887a7af82581a57378cfc446fc0da1fa74c1dae5a"
+  }
+ ],
+ "not_public": [
+  "1.1.1x (tarball; release commit 63ae3a7b02f8 is fetchable by SHA)",
+  "1.1.1y (tarball; release commit c14766976d2d is fetchable by SHA)",
+  "1.1.1zc",
+  "1.1.1ze",
+  "1.1.1zj"
+ ],
+ "fork": {
+  "repository": "JohnsterID/openssl-1.1.1-continued",
+  "refs": {
+   "refs/heads/OpenSSL_1_1_1-continued": "fb26261ef6aa8f1b3867f1a32e9a2a0d80057051",
+   "refs/tags/tarball/1.1.1za": "071b845c8896455fd5f4071840b2bb2a44c287d4",
+   "refs/tags/tarball/1.1.1zb": "47f2872e7d1d47b8e0cb895b637d24790bbf3eb4",
+   "refs/tags/tarball/1.1.1zd": "b5c6edcf86eb59aa8362eb0822f07de422b29f6a",
+   "refs/tags/tarball/1.1.1zf": "c52850a0a515e28b135eeac61d1bc73d3604e775",
+   "refs/tags/tarball/1.1.1zg": "9ac70d107bc7675e41b3f5542bc91eb47e9a4fac",
+   "refs/tags/tarball/1.1.1zh": "6f1312d2af4ec179f3d6d2e815d8cd8fe021fdb5",
+   "refs/tags/tarball/1.1.1zi": "fb26261ef6aa8f1b3867f1a32e9a2a0d80057051",
+   "refs/tags/carry/1.1.1zi-jz1": "b87631dacfb74cc044ba0955e3f0812b191e6450",
+   "refs/tags/carry/1.1.1zi-jz2": "d952ab0f7d08d52ce12ee3177fe2b503e8263806"
+  },
+  "refs_note": "Commit ids; for an annotated tag the peeled commit. carry/1.1.1zi-jz2 is a signed annotated tag on d952ab0f (from U5). The 1.1.1*-carry branch heads move (README, CI) and are not pinned."
+ },
+ "carries": [
+  {
+   "tag": "carry/1.1.1zi-jz1",
+   "commit": "b87631dacfb74cc044ba0955e3f0812b191e6450",
+   "base": "tarball/1.1.1zi",
+   "version_text": "OpenSSL 1.1.1zi-jz1  30 Sep 2026",
+   "fixes": [
+    "CVE-2025-69419",
+    "CVE-2026-35189"
+   ]
+  },
+  {
+   "tag": "carry/1.1.1zi-jz2",
+   "commit": "d952ab0f7d08d52ce12ee3177fe2b503e8263806",
+   "tree": "97d95fa0f3f037381972334c4b9c6becd37e6c1a",
+   "base": "tarball/1.1.1zi",
+   "version_text": "OpenSSL 1.1.1zi-jz2  3 Oct 2026",
+   "fixes": [
+    "CVE-2025-69419",
+    "CVE-2026-35189",
+    "CVE-2026-54872",
+    "CVE-2026-77696",
+    "CVE-2026-75806",
+    "CVE-2026-84782"
+   ],
+   "unreviewed_backports": [
+    "CVE-2026-35189",
+    "CVE-2026-54872",
+    "CVE-2026-77696",
+    "CVE-2026-75806",
+    "CVE-2026-84782"
+   ]
+  }
+ ],
+ "carry_assets": {
+  "carry/1.1.1zi-jz2": {
+   "prefix": "openssl-1.1.1zi-jz2",
+   "asset": "openssl-1.1.1zi-jz2.tar.gz",
+   "recipe": "git archive --format=tar --prefix=openssl-1.1.1zi-jz2/ carry/1.1.1zi-jz2 | gzip -n -9",
+   "sha256": "1e56d48b07410df3cad20a9ab6b0de0caecd832fa4b059a9065aa95ec97f9b75"
+  }
+ }
+}
