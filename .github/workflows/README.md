@@ -1,40 +1,32 @@
-## Rationale about our design for the GitHub Actions CI
+## CI on this fork
 
-The balance is between the time taken and the number of jobs.
-We're allowed 180 concurrent jobs in total across the entire project.
-Currently we're running about 60 on pull_request, a few more on push and
-a pile per day.
-So three simultaneous PRs should finish quickly enough.
-Given that most jobs run quickly, this could scale up to 5 or 6 without
-problem.
+Two workflows run here. Both use only `actions/checkout`, pinned by commit, with a read-only token.
 
-Moving more jobs into the `pull_request` category will limit the number
-of parallel builds (from different PRs) we can handle.
-We got into quite some strife over this with our older CI hosts
--- remember builds taking the best part of a day to run.
-We really want to avoid that again.
+`carry-ci.yml` runs on pushes to `ci` and to any `1.1.1*-carry` branch, on pull requests to those branches,
+and by hand (`workflow_dispatch`):
 
-I've been trying to limit total job time per job to around 20-30 minutes
-(there are some longer ones I know of), with most jobs running in the
-sub 5 minute range.
-There are some longer lived CIs -- up to an hour and I try to delegate
-these to push or daily rather than pull_request.
+- `native`: ubuntu-24.04 and ubuntu-22.04, each with the default `./config --strict-warnings` and with the
+  router's Configure options (`DEVICE_OPTIONS`, which include `no-dtls no-sm2`). Each job builds, checks
+  the version text (`OpenSSL 1.1.1zX-jzN`), runs the full `make test`, then runs the carried-fix
+  regression test verbosely.
+- `asan`: a `--debug enable-asan enable-ubsan` build (no recovery from UB) and the full `make test`.
+- `arm-qemu`: a cross build for 32-bit soft-float ARM (`arm-linux-gnueabi`, `-mcpu=cortex-a9`) with the
+  router's options. A subset of `make test` runs under qemu-user with `QEMU_CPU=cortex-a9`.
 
-Still, there is no hard and fast rule about what runs when or where.
-Make a suggestion about bettering the CIs -- Ideally I'd like the
-`pull_request` jobs to be the ones catching most of the problems and the
-push and daily being predictably boring successes.
-Just make an effort to rationally justify the inclusions/changes.
+`upstream-watch.yml` runs weekly (Monday 03:17 UTC) and by hand. It checks out the `tools` branch and runs
+`tools/watch.py`: Amazon Linux 2's `openssl11` source RPMs, OpenSSL's security advisories and 1.1.1
+vulnerability list, the cPanel/CloudLinux `ea-openssl11` backports, kzalewski/openssl-1.1.1 and this
+fork's own refs. A change turns the run red until the maintainer reviews it and commits the new
+`watch-state.json` to `tools`. GitHub disables a scheduled workflow after 60 days without repository
+activity; the maintainer re-enables it, and runs the same script by hand meanwhile.
 
-Things like the sanitiser builds, we know catch problems often.
-So even though they are slow they are worthwhile on `pull_request`.
-A lot of the daily builds are unlikely to catch much since they are
-checking options can be turned off and on, so they are fine not running
-as much.
-The demarkation between `pull_request` and `pull_request + push` is the
-difficult choice.
-I believe we should do all pull_request jobs as part of push too.
-The question is how many more should there be.
+OpenSSL's six 1.1.1 workflows (`ci.yml`, `cross-compiles.yml`, `macos.yml`, `run-checker-ci.yml`,
+`run-checker-merge.yml` and `windows.yml`) were removed here, and are disabled in the repository settings.
+Every job in them asks for OpenSSL's self-hosted runners (`ubuntu-22.04-self-hosted`,
+`windows-server-2022-self-hosted`, `w-mac-mini-*`), which a fork doesn't have. Several also use actions
+that exist only in OpenSSL's own setup (`actions/ilammy-msvc-dev-cmd`, `actions/ilammy-setup-nasm`,
+`actions/perl-actions-install-with-cpanm`, `actions/actions-rs-toolchain`). The originals stay on
+`OpenSSL_1_1_1-continued`, which is never changed.
 
-I don't have a good answer but I think we're converging on a practical
-number and we should get better as we gain experience.
+Everything in `.github/` is export-ignored, so this directory never changes a `git archive` tarball or a
+build.

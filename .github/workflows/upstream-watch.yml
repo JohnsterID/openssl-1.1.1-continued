@@ -1,0 +1,38 @@
+---
+# Weekly check of the sources this fork follows. The code lives on the tools branch; this file only has
+# to be on the default branch, because GitHub runs scheduled workflows from the default branch only.
+# Exit codes of tools/watch.py: 0 unchanged, 1 something changed (the run stays red until a reviewed
+# watch-state.json is committed to tools), 2 a source could not be fetched.
+name: upstream watch
+
+on:
+  schedule:
+    - cron: '17 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upstream-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          ref: tools
+          persist-credentials: false
+      - name: watch (GETs only)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 -I tools/watch.py --state watch-state.json --report watch-report.json
+      - name: provenance (published refs, public-by-SHA commits)
+        if: ${{ !cancelled() }}
+        run: tools/provenance.sh --light
+      - name: report
+        if: ${{ always() }}
+        run: cat watch-report.json || true
