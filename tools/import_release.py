@@ -340,7 +340,7 @@ def import_releases(repo, manifest):
         commit = git(repo, *args, env=cenv, input_bytes=rel["message"].encode())
         tag = rel.get("tag")
         if tag:
-            git(repo, "tag", "-f", tag, commit)
+            git(repo, "tag", "--no-sign", "-f", tag, commit)  # lightweight; immune to a global tag.gpgSign
         results.append({"version": rel["version"], "commit": commit, "tree": tree, "date_epoch": when,
                         "tag": tag, "kept_export_ignored": len(kept)})
         parent = commit

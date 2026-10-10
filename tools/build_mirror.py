@@ -366,7 +366,7 @@ def carry_branch(repo, zi_commit, patches):
     run(repo, "git", "commit", "-q", "--no-verify", "--no-gpg-sign", "-F", "-", env=e2,
         input_text=VERSION_MSG.format(suffix=SUFFIX))
     head = run(repo, "git", "rev-parse", "HEAD")
-    run(repo, "git", "tag", "-f", f"carry/1.1.1zi{SUFFIX}", head)
+    run(repo, "git", "tag", "--no-sign", "-f", f"carry/1.1.1zi{SUFFIX}", head)  # lightweight; immune to a global tag.gpgSign
     return {"carry_0001": run(repo, "git", "rev-parse", "HEAD~2"), "carry_0002": carry2, "version_commit": head}
 
 
