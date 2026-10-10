@@ -33,9 +33,16 @@ done < <(json 'print("\n".join(" ".join(x) for x in d["fork"]["refs"].items()))'
 
 # 2. OpenSSL's own post-1.1.1w commits are still fetchable by SHA (they are on no public ref)
 git init -q "$WORK/up"
+# GitHub occasionally fails a by-SHA fetch transiently (seen once on a hosted runner, 10 Oct 2026), so
+# retry with backoff and show git's error before calling the commit gone.
 for sha in $(json 'print(" ".join(d["upstream"].values()))'); do
-  if git -C "$WORK/up" fetch -q --depth=1 --no-tags "$UPSTREAM" "$sha" 2>/dev/null; then say "ok   upstream $sha"
-  else bad "upstream $sha no longer fetchable"; fi
+  ok=0
+  for try in 1 2 3; do
+    if err=$(git -C "$WORK/up" fetch -q --depth=1 --no-tags "$UPSTREAM" "$sha" 2>&1); then ok=1; break; fi
+    [ "$try" -lt 3 ] && sleep $((try * 10))
+  done
+  if [ "$ok" = 1 ]; then say "ok   upstream $sha$([ "$try" -gt 1 ] && printf " (attempt %s)" "$try")"
+  else bad "upstream $sha no longer fetchable after 3 attempts: $(printf '%s' "$err" | tail -n 1)"; fi
 done
 
 # 3. the pinned source RPMs (content-addressed blobstore URLs)
