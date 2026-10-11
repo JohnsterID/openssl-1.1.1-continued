@@ -74,6 +74,15 @@ void OPENSSL_cpuid_setup(void) __attribute__ ((constructor));
 #   include <sys/auxv.h>
 #   define OSSL_IMPLEMENT_GETAUXVAL
 #  endif
+# elif defined(__linux__) && !defined(__ANDROID__) && !defined(__UCLIBC__)
+/*
+ * Other Linux C libraries, in practice musl, which has had getauxval() since
+ * 1.1.0 but has no version macro to test. Without it the SIGILL probes below
+ * decide, and on a kernel without VFP/NEON support they can pass on a core
+ * where the unit happens to be enabled and fail on another.
+ */
+#  include <sys/auxv.h>
+#  define OSSL_IMPLEMENT_GETAUXVAL
 # endif
 # if defined(__FreeBSD__)
 #  include <sys/param.h>
