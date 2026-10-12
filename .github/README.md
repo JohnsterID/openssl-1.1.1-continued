@@ -1,7 +1,7 @@
 # OpenSSL 1.1.1 continued — unofficial
 
 **Not affiliated with, endorsed by, or supported by the OpenSSL Project or the OpenSSL
-Corporation.** "OpenSSL" is their trademark. This repository only republishes their source, plus six
+Corporation.** "OpenSSL" is their trademark. This repository only republishes their source, plus seven
 clearly marked fixes, so that the post-1.1.1w 1.1.1 releases can be built, verified and reviewed in git.
 
 OpenSSL 1.1.1 reached end of public support with **1.1.1w** (September 2023). OpenSSL has since issued
@@ -17,9 +17,10 @@ or in OpenSSL's public git. The source of several of them is publicly redistribu
 |---|---|
 | `OpenSSL_1_1_1-continued` | OpenSSL's public `OpenSSL_1_1_1-stable` history. Then OpenSSL's own commits after 1.1.1w that are reachable by SHA in `openssl/openssl`, kept unchanged with their original authors and ids (1.1.1x, 1.1.1y and the first 1.1.1za fix). Then one commit per release: 1.1.1za, zb, zd, zf, zg, zh, zi. |
 | `tarball/1.1.1zX` | The release commits on `OpenSSL_1_1_1-continued`. `git archive tarball/1.1.1zX` equals that release's tarball content, file for file. |
-| `1.1.1zi-carry` (default branch) | 1.1.1zi plus the six carried fixes below, plus a distinct version text. |
-| `carry/1.1.1zi-jz2` | The current tagged carry release: 1.1.1zi plus all six carried fixes. Signed tag. |
-| `carry/1.1.1zi-jz1` | The previous tagged carry release: 1.1.1zi plus fixes 1 and 2 only. |
+| `1.1.1zi-carry` (default branch) | 1.1.1zi plus the seven carried fixes below, plus a distinct version text. |
+| `carry/1.1.1zi-jz3` | The current tagged carry release: 1.1.1zi plus all seven carried fixes. Signed tag. |
+| `carry/1.1.1zi-jz2` | The previous tagged carry release: 1.1.1zi plus fixes 1–6. |
+| `carry/1.1.1zi-jz1` | The first tagged carry release: 1.1.1zi plus fixes 1 and 2 only. |
 | `tools` | No OpenSSL code: the importer, the upstream watcher, pinned inputs (`releases.json`), keys, the ports audit and `RELEASING.md`. |
 
 1.1.1x, 1.1.1y, 1.1.1zc and 1.1.1ze have no public tarball. Their changes are contained in the next
@@ -35,19 +36,27 @@ available release commit.
 | 4 | CVE-2026-77696, constant-time SM2 signing | backport of 3.4 `419f5cb519` (Igor Ustinov, Viktor Dukhovni) | **unreviewed 1.1.1 backport** | cPanel/CloudLinux; Ubuntu jammy 3.0.2 port; [audit](https://github.com/JohnsterID/openssl-1.1.1-continued/blob/tools/audit/ports-1.1.1zi.md) | no upstream test; `test_internal_sm2` | not compiled (`no-sm2`) |
 | 5 | CVE-2026-75806, undersized TLS/DTLS 1.2 AEAD records | backport of 3.4 `5af82fefba` (Daniel Kubec, Mounir Idrassi) | **unreviewed 1.1.1 backport** | cPanel/CloudLinux; Ubuntu jammy 3.0.2 port; [audit](https://github.com/JohnsterID/openssl-1.1.1-continued/blob/tools/audit/ports-1.1.1zi.md) | upstream `recordlentest` cases (fail without the fix) | TLS alert code only (DTLS compiled out) |
 | 6 | CVE-2026-84782, DTLS retransmission from a stale offset | backport of 3.4 `9f6b34422a` (Ryan Hooper) | **unreviewed 1.1.1 backport** | cPanel/CloudLinux; Ubuntu jammy 3.0.2 port; [audit](https://github.com/JohnsterID/openssl-1.1.1-continued/blob/tools/audit/ports-1.1.1zi.md) | upstream `dtlstest` cases (fail without the fix) | not reachable (`no-dtls`) |
+| 7 | Not a CVE: on musl Linux, ARM capability detection reads `AT_HWCAP` instead of SIGILL probes | **fork-specific portability fix** (`crypto/armcap.c`); no OpenSSL release has it, master included | ours | — | a static musl test program with a wrapped `getauxval()` under qemu-user (arm and aarch64); run on two BCM63138 routers | glibc builds compile to the same object; affects static musl builds only |
 
 - **"Unreviewed 1.1.1 backport"** means that OpenSSL has not reviewed this code. OpenSSL's own 1.1.1 fixes
   for CVE-2026-35189, -54872, -77696, -75806 and -84782 are in its 1.1.1zj, whose source is not public.
   These backports **will be replaced by OpenSSL's code when 1.1.1zj source is public**: the `tools`
   watcher checks Amazon Linux 2 for an `openssl11` 1.1.1zj source RPM every week.
-- Fixes 3–6 keep their original authors. They are in `carry/1.1.1zi-jz2`, not in `carry/1.1.1zi-jz1`.
+- Fixes 3–6 keep their original authors. They are in `carry/1.1.1zi-jz2` and later, not in `carry/1.1.1zi-jz1`.
+- **Fix 7** is in `carry/1.1.1zi-jz3` and later. Without it, a static musl build probes NEON and the ARMv8
+  crypto instructions under a SIGILL handler and trusts the result. On a kernel built without VFP/NEON
+  support (seen on BCM63138 routers running Linux 4.1), the probe passed on one core and failed on the other,
+  and a process that later ran a NEON routine on the other core died with SIGILL. musl has had `getauxval()`
+  since 1.1.0. glibc, Android and BSD builds are unchanged.
 - Where you can, build with **`no-dtls no-sm2`**: that removes the code of fixes 4 and 6 and most of 5.
-- Drop each fix once an official 1.1.1 release with public source carries it.
+- Drop each of fixes 1–6 once an official 1.1.1 release with public source carries it. Fix 7 stays until
+  OpenSSL itself reads `AT_HWCAP` on musl.
 
 ## Version and ABI
 
-The carry release reports `OpenSSL 1.1.1zi-jz2  3 Oct 2026` (`carry/1.1.1zi-jz1` reported
-`OpenSSL 1.1.1zi-jz1  30 Sep 2026`), so it can't be mistaken for OpenSSL's own 1.1.1zi.
+The carry release reports `OpenSSL 1.1.1zi-jz3  12 Oct 2026` (`carry/1.1.1zi-jz2` reported
+`OpenSSL 1.1.1zi-jz2  3 Oct 2026`, `carry/1.1.1zi-jz1` `OpenSSL 1.1.1zi-jz1  30 Sep 2026`), so it can't
+be mistaken for OpenSSL's own 1.1.1zi.
 `OPENSSL_VERSION_NUMBER` (0x1010122fL), the SONAMEs (`libssl.so.1.1`, `libcrypto.so.1.1`) and the symbol
 versions are unchanged, so it's a drop-in for 1.1.1 consumers.
 
@@ -60,18 +69,29 @@ versions are unchanged, so it's a drop-in for 1.1.1 consumers.
 - On hardware: the jz2 libraries built from `carry/1.1.1zi-jz2` with the router recipe ran on a spare
   DJA0231 router (BCM63138, 3 Oct 2026): TLS 1.2/1.3 with RSA, P-384 and P-521, its web GUI (nginx),
   and ten consumers restarted one by one, with no crash or reboot.
+- jz3 (12 Oct 2026):
+  - `make test` on x86_64 passes 161 recipes / 2667 tests;
+  - the exported symbols and version nodes of `libcrypto.so.1.1` (4413) and `libssl.so.1.1` (499) equal jz2's;
+  - built for 32-bit ARM with glibc, `crypto/armcap.c` preprocesses and compiles to the same output as in jz2.
+- Fix 7, static musl (gcc 11.2, musl 1.2.3), with a test program whose `getauxval()` returns a kernel
+  HWCAP without NEON/ASIMD under qemu-user:
+  - before the fix, `OPENSSL_armcap_P` was 0x3d on arm and 0x7f on aarch64;
+  - with it, 0x0 and 0x2 (timer only).
+  - On two BCM63138 routers, the arm test binary (byte-identical when rebuilt from the jz3 tree) reported no
+    NEON in any run: 0 of 20 on one; 0 of 15 pinned to each core and 0 of 20 unpinned on the other. The unfixed
+    build reported NEON in 15 of 15 runs pinned to the first core and 0 of 15 on the second.
 - CI (`carry-ci.yml`) builds and tests the default and the router configurations on Ubuntu 24.04 and
   22.04, an AddressSanitizer + UndefinedBehaviorSanitizer build, and the ARM build under qemu. Its runs
   are in the Actions tab.
 
 ## How to verify
 
-- **The release tag:** `git tag -v carry/1.1.1zi-jz2`, with an `allowed_signers` file holding the key
+- **The release tag:** `git tag -v carry/1.1.1zi-jz3`, with an `allowed_signers` file holding the key
   below (`git config gpg.ssh.allowedSignersFile allowed_signers`). The `tools` branch holds the file.
   - Signing key (SSH, ed25519): `SHA256:pNKgXGMFPyNsg5EwoECScta8iEzzAENElEkGvS/ZugU`
-- **The release tarball:** the release asset `openssl-1.1.1zi-jz2.tar.gz` is
-  `git archive --format=tar --prefix=openssl-1.1.1zi-jz2/ carry/1.1.1zi-jz2 | gzip -n -9`, sha256
-  `1e56d48b07410df3cad20a9ab6b0de0caecd832fa4b059a9065aa95ec97f9b75`; `SHA256SUMS.sig` signs its
+- **The release tarball:** the release asset `openssl-1.1.1zi-jz3.tar.gz` is
+  `git archive --format=tar --prefix=openssl-1.1.1zi-jz3/ carry/1.1.1zi-jz3 | gzip -n -9`, sha256
+  `1c693f27e23a541cf649275bdffdbd0c70ae1dc6c4b215b798e9810c5c33578f`; `SHA256SUMS.sig` signs its
   checksum. GitHub's automatic "Source code" archives use another prefix and aren't byte-stable.
 - **The release commits:** each tree comes from an Amazon Linux 2 `openssl11` source RPM. Their
   signatures check against Amazon's key `99E6 17FE 5DB5 27C0 D8BD 5F8E 11CF 1F95 C87F 5B1A`, which was
