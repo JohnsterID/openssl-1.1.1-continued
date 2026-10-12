@@ -94,7 +94,8 @@
    "refs/tags/tarball/1.1.1zh": "6f1312d2af4ec179f3d6d2e815d8cd8fe021fdb5",
    "refs/tags/tarball/1.1.1zi": "fb26261ef6aa8f1b3867f1a32e9a2a0d80057051",
    "refs/tags/carry/1.1.1zi-jz1": "b87631dacfb74cc044ba0955e3f0812b191e6450",
-   "refs/tags/carry/1.1.1zi-jz2": "d952ab0f7d08d52ce12ee3177fe2b503e8263806"
+   "refs/tags/carry/1.1.1zi-jz2": "d952ab0f7d08d52ce12ee3177fe2b503e8263806",
+   "refs/tags/carry/1.1.1zi-jz3": "c7dabe365ed846f9a2196a3c5cd55944d3586fb6"
   },
   "refs_note": "Commit ids; for an annotated tag the peeled commit. carry/1.1.1zi-jz2 is a signed annotated tag on d952ab0f (from U5). The 1.1.1*-carry branch heads move (README, CI) and are not pinned."
  },
@@ -130,6 +131,31 @@
     "CVE-2026-75806",
     "CVE-2026-84782"
    ]
+  },
+  {
+   "tag": "carry/1.1.1zi-jz3",
+   "commit": "c7dabe365ed846f9a2196a3c5cd55944d3586fb6",
+   "tree": "8ce8ad9496ef1a98d289b02c1bd63ee633824cb0",
+   "base": "tarball/1.1.1zi",
+   "version_text": "OpenSSL 1.1.1zi-jz3  12 Oct 2026",
+   "fixes": [
+    "CVE-2025-69419",
+    "CVE-2026-35189",
+    "CVE-2026-54872",
+    "CVE-2026-77696",
+    "CVE-2026-75806",
+    "CVE-2026-84782"
+   ],
+   "unreviewed_backports": [
+    "CVE-2026-35189",
+    "CVE-2026-54872",
+    "CVE-2026-77696",
+    "CVE-2026-75806",
+    "CVE-2026-84782"
+   ],
+   "fork_specific": [
+    "armcap: musl Linux reads AT_HWCAP with getauxval() (e8b135f84); not a CVE, in no OpenSSL release"
+   ]
   }
  ],
  "carry_assets": {
@@ -138,6 +164,12 @@
    "asset": "openssl-1.1.1zi-jz2.tar.gz",
    "recipe": "git archive --format=tar --prefix=openssl-1.1.1zi-jz2/ carry/1.1.1zi-jz2 | gzip -n -9",
    "sha256": "1e56d48b07410df3cad20a9ab6b0de0caecd832fa4b059a9065aa95ec97f9b75"
+  },
+  "carry/1.1.1zi-jz3": {
+   "prefix": "openssl-1.1.1zi-jz3",
+   "asset": "openssl-1.1.1zi-jz3.tar.gz",
+   "recipe": "git archive --format=tar --prefix=openssl-1.1.1zi-jz3/ carry/1.1.1zi-jz3 | gzip -n -9",
+   "sha256": "1c693f27e23a541cf649275bdffdbd0c70ae1dc6c4b215b798e9810c5c33578f"
   }
  }
 }

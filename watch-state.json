@@ -61,13 +61,14 @@
      "HEAD": "81263a4906c7d0a3c51daef556b3d772b4082253",
      "refs/heads/1.1.1zi-carry": "81263a4906c7d0a3c51daef556b3d772b4082253"
     },
-    "note": "reviewed 9 Oct 2026; expects the signed carry/1.1.1zi-jz2 tag of U5 (peeled d952ab0f)"
+    "note": "reviewed 12 Oct 2026; expects the signed carry/1.1.1zi-jz3 tag (peeled c7dabe36)"
    },
    "key": {
     "refs": {
      "refs/heads/OpenSSL_1_1_1-continued": "fb26261ef6aa8f1b3867f1a32e9a2a0d80057051",
      "refs/tags/carry/1.1.1zi-jz1": "b87631dacfb74cc044ba0955e3f0812b191e6450",
      "refs/tags/carry/1.1.1zi-jz2": "d952ab0f7d08d52ce12ee3177fe2b503e8263806",
+     "refs/tags/carry/1.1.1zi-jz3": "c7dabe365ed846f9a2196a3c5cd55944d3586fb6",
      "refs/tags/tarball/1.1.1za": "071b845c8896455fd5f4071840b2bb2a44c287d4",
      "refs/tags/tarball/1.1.1zb": "47f2872e7d1d47b8e0cb895b637d24790bbf3eb4",
      "refs/tags/tarball/1.1.1zd": "b5c6edcf86eb59aa8362eb0822f07de422b29f6a",
