@@ -7,6 +7,17 @@
  https://github.com/openssl/openssl/commits/ and pick the appropriate
  release branch.
 
+ Changes between 1.1.1zi-jz2 and 1.1.1zi-jz3 [12 Oct 2026]
+
+  *) On Linux C libraries other than glibc (in practice musl), the ARM and
+     AArch64 capability setup reads AT_HWCAP with getauxval() instead of
+     probing NEON and the ARMv8 crypto instructions under a SIGILL handler.
+     On a kernel built without VFP/NEON support the probe passed on one
+     core and failed on another, and a process that later ran a NEON
+     routine on the other core died with SIGILL. glibc, Android and BSD
+     builds are unchanged.
+     [Fork-specific portability fix; not in any OpenSSL release]
+
  Changes between 1.1.1zi-jz1 and 1.1.1zi-jz2 [3 Oct 2026]
 
  *) The EC Montgomery ladder pins the tops of the padded scalar and of
