@@ -101,6 +101,17 @@ class WatchTests(unittest.TestCase):
         report = self.assertChanged(responses(primary=prim), "al2", "1.1.1zi-1.amzn2.0.2")
         self.assertNotIn("Z1", report["changed"][0]["what"])
 
+    def test_al2_after_zj_review_a_zj_rebuild_is_not_z1_but_zk_is(self):
+        zj = [("1.1.1zh", "1.amzn2.0.1"), ("1.1.1zi", "1.amzn2.0.1"), ("1.1.1zj", "1.amzn2.0.1")]
+        _, _, reviewed = self.run_watch(self.baseline(), responses(primary=primary(zj), revision=1791000000))
+        code, report, _ = self.run_watch(reviewed, responses(primary=primary(zj + [("1.1.1zj", "1.amzn2.0.2")]),
+                                                            revision=1792000000))
+        self.assertEqual(code, 1)
+        self.assertNotIn("Z1", report["changed"][0]["what"])
+        code, report, _ = self.run_watch(reviewed, responses(primary=primary(zj + [("1.1.1zk", "1.amzn2.0.1")]),
+                                                            revision=1792000000))
+        self.assertIn("NEW 1.1.1 RELEASE 1.1.1zk", report["changed"][0]["what"])
+
     def test_al2_revision_alone_is_not_a_change(self):
         code, report, _ = self.run_watch(self.baseline(), responses(revision=1799999999))
         self.assertEqual(code, 0, report)

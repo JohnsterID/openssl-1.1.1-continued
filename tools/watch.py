@@ -270,9 +270,14 @@ def describe_change(src, old, new):
     if src == "al2":
         added = sorted(set(new["openssl11"]) - set(old.get("openssl11", [])))
         gone = sorted(set(old.get("openssl11", [])) - set(new["openssl11"]))
-        zj = [v for v in added if version_key(v.split("-")[0]) > version_key("1.1.1zi")]
+        # A new release is a version newer than every one in the reviewed state; a rebuild of a known version
+        # (another -N.amzn2.0.M of it) is not.
+        known = [version_key(v.split("-")[0]) for v in old.get("openssl11", [])]
+        newest = max(known) if known else version_key("1.1.1zi")
+        fresh = sorted({v.split("-")[0] for v in added if version_key(v.split("-")[0]) > newest}, key=version_key)
         text = f"openssl11 added {added or '-'} removed {gone or '-'}"
-        return text + ("; NEW 1.1.1 RELEASE: run the zj reconciliation (event Z1)" if zj else "")
+        return text + (f"; NEW 1.1.1 RELEASE {', '.join(fresh)}: run the reconciliation (RELEASING.md, event Z1)"
+                       if fresh else "")
     if src == "fork":
         o, n = old.get("refs", {}), new["refs"]
         moved = sorted(r for r in set(o) | set(n) if o.get(r) != n.get(r))
