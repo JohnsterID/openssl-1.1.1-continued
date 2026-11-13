@@ -2,7 +2,7 @@
 
 | Ref | Status |
 |---|---|
-| the current `1.1.1*-carry` branch (the default branch, now `1.1.1zi-carry`) and the newest `carry/*` tag | fixes accepted |
+| the current `1.1.1*-carry` branch (the default branch, now `1.1.1zj-carry`) and the newest `carry/*` tag | fixes accepted |
 | older `carry/*` tags and older `1.1.1*-carry` branches | not updated; move to the newest tag |
 | `OpenSSL_1_1_1-continued`, `tarball/*` | OpenSSL's code as released; never changed here |
 | `tools` | the import and watch tooling; fixes accepted |
