@@ -25,7 +25,7 @@ require signed commits.
 
 | Change | Action |
 |---|---|
-| `al2`: a new `openssl11` version (1.1.1zj or later) | A new release: the next section. |
+| `al2`: a new `openssl11` version (newer than every reviewed one; next 1.1.1zk) | A new release: the next section. |
 | `al2`: a rebuild of a known version | Download and compare its tarball sha256 with `releases.json`; a different tarball needs a note. |
 | `secadv` / `vulns111` | Read the advisory. If it affects 1.1.1, decide: wait for the AL2 source, or backport from OpenSSL's public 3.x commit (labelled "unreviewed 1.1.1 backport", with a test). |
 | `cpanel` | Compare their new patches with ours (`tools/ports_audit.py`); a semantic difference is a review item. |
@@ -44,17 +44,27 @@ require signed commits.
    new CHANGES entries and advisories.
 4. Import it (add the version to `tools/build_mirror.py` and its pins), twice into empty repositories;
    the ids must agree. Push the new import commit to `OpenSSL_1_1_1-continued` and its `tarball/1.1.1zX`
-   tag (signed tag from this release on). The six upstream workflows are disabled in the repository
-   settings, so the push starts nothing.
+   tag (signed tag from this release on: `git tag -s tarball/1.1.1zX <import>` before its first push, as the
+   tag ruleset forbids moving it later). The import's tree holds OpenSSL's six upstream workflows, which run on
+   any push (`on: push`, tags included), and `actions/checkout` is on the actions allowlist: disable Actions
+   for this push (Settings → Actions → General) and re-enable it, with the same allowlist (`JohnsterID/*`,
+   `actions/checkout@*`), before step 7.
 5. Reconcile the carry: diff the previous release plus the carried fixes against the new tarball, limited to the
    files the fixes touch. For each fix: keep OpenSSL's code where it differs, drop our backport once
    OpenSSL's release contains the fix, and record the comparison (a semantic difference from our port is
    worth a note to openssl-security@openssl.org). Never write "fixed in 1.1.1zX" for our own backports.
-6. Create `1.1.1zX-carry` from the new import: the remaining fixes (signed, `cherry-pick -x -S`), the
-   version commit `OPENSSL_VERSION_TEXT "OpenSSL 1.1.1zX-jz1  <date>"` (made when it will be published,
-   never dated ahead), then cherry-pick the `.github` commits from the current carry branch: README,
-   SECURITY.md, carry-ci, the watcher, and the removal of the six upstream workflows. Rulesets and CI use
-   `1.1.1*-carry`, so they apply unchanged.
+6. Create `1.1.1zX-carry` from the new import: the remaining fixes (signed, `cherry-pick -x -S`), then
+   cherry-pick the `.github` commits from the current carry branch (README, SECURITY.md, carry-ci, the
+   watcher, and the removal of the six upstream workflows), then the version commit
+   `OPENSSL_VERSION_TEXT "OpenSSL 1.1.1zX-jz1  <date>"` (made when it will be published, never dated ahead),
+   then the README update for the release. The version commit is the tag target, so it comes after the
+   `.github` commits, as in jz3: its tree then holds no upstream workflow, whose `on: push` would start
+   OpenSSL's dead jobs (168 per pushed ref) for the tag push. Rulesets and CI use `1.1.1*-carry`, so they
+   apply unchanged. The date is the publication day, the day of steps 8–9. A carry branch prepared earlier
+   is re-made that day: the version text, the CHANGES heading and the README's version line, test date and
+   asset hash change, nothing else (a correction made at the same time is reviewed as such), and step 7's
+   tests run again on the re-made tree. The asset hash is known only then (`git archive` records the version
+   commit's id and time).
 7. CI green on the new branch. A new `1.1.1zX-carry` is a new branch, so push it directly (carry-ci runs on
    `1.1.1*-carry`); `ci` holds the previous carry and moving it to a new base is not a fast-forward. Use `ci`
    for later changes to the same carry branch. Push step 4's import before the branch, so that the branch
@@ -64,7 +74,9 @@ require signed commits.
 8. Sign and push the tag (`git tag -s carry/1.1.1zX-jz1 <version commit>`), build the release asset with
    `git archive --format=tar --prefix=openssl-1.1.1zX-jz1/ <tag> | gzip -n -9`, write SHA256SUMS, sign it
    (`ssh-keygen -Y sign -n file`), create a draft release, check it, publish it. Add the tag and the asset
-   hash to `releases.json`.
+   hash to `releases.json` (`fork.refs`: the peeled tag and every ref this release moved), commit the reviewed
+   `watch-state.json` with them, and push `tools` last: tools CI compares `fork.refs` with the published refs
+   and re-archives each carry tag, so it fails until steps 4–8 are pushed.
 9. Switch the default branch to `1.1.1zX-carry` (Settings → General). Update the README's ref table.
 
 ## Signing
