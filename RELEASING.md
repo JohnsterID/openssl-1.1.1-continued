@@ -55,8 +55,12 @@ require signed commits.
    never dated ahead), then cherry-pick the `.github` commits from the current carry branch: README,
    SECURITY.md, carry-ci, the watcher, and the removal of the six upstream workflows. Rulesets and CI use
    `1.1.1*-carry`, so they apply unchanged.
-7. CI green on `ci` (push the new branch there first). Native and ARM `make test`, abidiff and the
-   export tables against the previous carry.
+7. CI green on the new branch. A new `1.1.1zX-carry` is a new branch, so push it directly (carry-ci runs on
+   `1.1.1*-carry`); `ci` holds the previous carry and moving it to a new base is not a fast-forward. Use `ci`
+   for later changes to the same carry branch. Push step 4's import before the branch, so that the branch
+   push adds only signed commits (`1.1.1*-carry` requires them; the import commit is unsigned and its branch
+   is outside that rule). Native and ARM `make test`, abidiff and the export tables against the previous
+   carry.
 8. Sign and push the tag (`git tag -s carry/1.1.1zX-jz1 <version commit>`), build the release asset with
    `git archive --format=tar --prefix=openssl-1.1.1zX-jz1/ <tag> | gzip -n -9`, write SHA256SUMS, sign it
    (`ssh-keygen -Y sign -n file`), create a draft release, check it, publish it. Add the tag and the asset
