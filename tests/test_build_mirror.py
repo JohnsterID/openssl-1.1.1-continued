@@ -199,9 +199,17 @@ class InputTests(unittest.TestCase):
     def test_recorded_mirror_path_is_kept_for_the_published_ids(self):
         # The published import messages name this path; changing it would change every commit id.
         self.assertIn("4f8fa06cd2aae03f75376d4f686e3f2d75ccd73ade02131072abdefd9ce64bbf", mb.AL2_MIRROR_RECORDED)
+        for v in mb.CONTINUED[:mb.CONTINUED.index("zi") + 1]:
+            self.assertEqual(mb.al2_mirror(v), mb.AL2_MIRROR_RECORDED, v)
         source = Path(mb.__file__).read_text()
         self.assertNotIn(".local/openssl-strategy", source)
         self.assertNotIn(".local/openssl-shared", source)
+
+    def test_later_release_names_the_snapshot_that_listed_it(self):
+        # zj (built 5 Oct) is not in the 30 Sep snapshot; its message names the one that listed it.
+        self.assertIn("b74e59fb58d2043180b74ba4943991dbdcb87e828149737a6e1b85f7d100cacb", mb.al2_mirror("zj"))
+        self.assertNotEqual(mb.al2_mirror("zj"), mb.AL2_MIRROR_RECORDED)
+        self.assertNotIn("AL2_MIRROR_RECORDED})", Path(mb.__file__).read_text())
 
 
 if __name__ == "__main__":

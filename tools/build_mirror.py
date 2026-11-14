@@ -12,7 +12,7 @@ Build (deterministic; the same inputs always give the same commit ids):
 
     REPO is a git work tree that holds OpenSSL's upstream objects (`--fetch-upstream` gets them). DL holds
     the inputs, all hash-checked against the pins below:
-      srpm/openssl11-1.1.1{za,zb,zd,zf,zg,zh,zi}-1.amzn2.0.1.src.rpm   Amazon Linux 2 source RPMs
+      srpm/openssl11-1.1.1{za,zb,zd,zf,zg,zh,zi,zj}-1.amzn2.0.1.src.rpm   Amazon Linux 2 source RPMs
       openssl-1.1.1w.tar.gz                                             openssl.org (GPG-checked separately)
       openssl-1.1.1zX.tar.*                                            optional: extracted from the SRPM if absent
       carry/0001-*.patch, carry/0002-*.patch                            optional: rebuilds carry/1.1.1zi-jz1
@@ -54,19 +54,31 @@ except ImportError:  # pragma: no cover - tools branch layout
 IMPORTER = ("JohnsterID", "69278611+JohnsterID@users.noreply.github.com")
 AL2_KEY = "99E617FE5DB527C0D8BD5F8E11CF1F95C87F5B1A"
 OPENSSL_W_KEY = "EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5"
-# The SRPMS mirror path recorded in the published import commit messages (30 Sep 2026). It is part of
+# The SRPMS mirror path recorded in the published import commit messages (30 Sep 2026) for za-zi. It is part of
 # those commits, so it stays as recorded: changing it would change every commit id. Downloads must not use
 # it: resolve https://cdn.amazonlinux.com/2/core/latest/SRPMS/mirror.list on every run (on 9 Oct it gave
 # 3fc0e197...), or use the content-addressed blobstore URL https://cdn.amazonlinux.com/blobstore/<sha256>/<srpm>.
 AL2_MIRROR_RECORDED = ("https://cdn.amazonlinux.com/2/core/2.0/SRPMS/"
                        "4f8fa06cd2aae03f75376d4f686e3f2d75ccd73ade02131072abdefd9ce64bbf/")
+# A release published after 30 Sep is not in that snapshot, so its import names the snapshot whose
+# primary.xml listed its pinned SRPM when it was imported (mirror.list, repomd revision in the comment).
+AL2_MIRROR_FOR = {
+    "zj": ("https://cdn.amazonlinux.com/2/core/2.0/SRPMS/"
+           "b74e59fb58d2043180b74ba4943991dbdcb87e828149737a6e1b85f7d100cacb/"),  # repomd rev 1794442927 (12 Nov), seen 13-14 Nov
+}
+
+
+def al2_mirror(v):
+    """The SRPMS path an import commit message names for release v."""
+    return AL2_MIRROR_FOR.get(v, AL2_MIRROR_RECORDED)
+
 TAG_W = "e04bd3433fd84e1861bf258ea37928d9845e6a86"      # OpenSSL_1_1_1w (tag object signed by Tomas Mraz)
 STABLE_HEAD = "b372b1f76450acdfed1e2301a39810146e28b02c"  # OpenSSL_1_1_1-stable, "Prepare for 1.1.1x"
 # OpenSSL's own 1.1.1 commits after b372b1f, on no public ref but fetchable by SHA from github.com/openssl/openssl:
 # through 1.1.1x (63ae3a7b) and 1.1.1y (c1476697) to "Fix SSL_select_next_proto" (CVE-2024-5535, first za fix).
 PUBLIC_TIP = "b78ec0824da857223486660177d3b1f255c65d87"
 CARRY1_UPSTREAM = "4191043c36f1a50c717a2d0075fc6f3b9bc0afc5"
-CONTINUED = ["za", "zb", "zd", "zf", "zg", "zh", "zi"]
+CONTINUED = ["za", "zb", "zd", "zf", "zg", "zh", "zi", "zj"]
 SUFFIX = "-jz1"  # "+jz1" breaks util/mkdef.pl, whose parser needs "-" or " " after the letters
 CARRY_DATE = "2026-09-30T21:30:00+10:00"
 
@@ -95,6 +107,9 @@ PINS = {
     "zi": {"srpm_sha256": "5790d70cd5f66704ec6acb14119610cc3d522255f7700e16ad7d3d721f543fef",
            "tarball": "openssl-1.1.1zi.tar.gz",
            "tarball_sha256": "64f0f77354f10a8e5012e44887a7af82581a57378cfc446fc0da1fa74c1dae5a"},
+    "zj": {"srpm_sha256": "0139fc06d61a96527f39d0f7be789a2466ed1f6ad029917df4281ca1bf3ce2b1",
+           "tarball": "openssl-1.1.1zj.tar.gz",
+           "tarball_sha256": "320a3fdd38f2ef1dbef418c1255b285f6b99dc70535bc54734a8a84bd44d422b"},
 }
 
 
@@ -207,7 +222,7 @@ def release_message(inputs, v, prev):
                       + (", xz-recompressed" if tb.suffix == ".xz" else "") +
                       "); its byte hash is not OpenSSL's, only its content is imported.")
         built = datetime.datetime.fromtimestamp(s["buildtime"], datetime.timezone.utc)
-        lines += [f"Source-RPM: {s['file']} (Amazon Linux 2 core, {AL2_MIRROR_RECORDED})",
+        lines += [f"Source-RPM: {s['file']} (Amazon Linux 2 core, {al2_mirror(v)})",
                   f"Source-RPM-SHA256: {s['sha256']}",
                   f"Source-RPM-Signature: RSA header + PGP header/payload valid, key {AL2_KEY}",
                   f"Source-RPM-Buildtime: {built:%Y-%m-%dT%H:%M:%SZ}"]
@@ -386,7 +401,7 @@ def build(repo, dl, keys=None):
     patches = inputs.carry_patches()
     carry = None
     if patches:
-        carry = carry_branch(repo, heads["OpenSSL_1_1_1-continued"], patches)
+        carry = carry_branch(repo, tags["tarball/1.1.1zi"], patches)  # jz1 is on zi, not the newest import
         tags[f"carry/1.1.1zi{SUFFIX}"] = carry["version_commit"]
         heads["1.1.1zi-carry"] = carry["version_commit"]
     trees = {ref: run(repo, "git", "rev-parse", f"{sha}^{{tree}}") for ref, sha in {**tags, **heads}.items()}
