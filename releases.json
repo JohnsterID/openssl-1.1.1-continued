@@ -95,7 +95,7 @@
  "fork": {
   "repository": "JohnsterID/openssl-1.1.1-continued",
   "refs": {
-   "refs/heads/OpenSSL_1_1_1-continued": "fb26261ef6aa8f1b3867f1a32e9a2a0d80057051",
+   "refs/heads/OpenSSL_1_1_1-continued": "5971c6122c4a02abea86e2581dfa67e57321c281",
    "refs/tags/tarball/1.1.1za": "071b845c8896455fd5f4071840b2bb2a44c287d4",
    "refs/tags/tarball/1.1.1zb": "47f2872e7d1d47b8e0cb895b637d24790bbf3eb4",
    "refs/tags/tarball/1.1.1zd": "b5c6edcf86eb59aa8362eb0822f07de422b29f6a",
@@ -103,9 +103,11 @@
    "refs/tags/tarball/1.1.1zg": "9ac70d107bc7675e41b3f5542bc91eb47e9a4fac",
    "refs/tags/tarball/1.1.1zh": "6f1312d2af4ec179f3d6d2e815d8cd8fe021fdb5",
    "refs/tags/tarball/1.1.1zi": "fb26261ef6aa8f1b3867f1a32e9a2a0d80057051",
+   "refs/tags/tarball/1.1.1zj": "5971c6122c4a02abea86e2581dfa67e57321c281",
    "refs/tags/carry/1.1.1zi-jz1": "b87631dacfb74cc044ba0955e3f0812b191e6450",
    "refs/tags/carry/1.1.1zi-jz2": "d952ab0f7d08d52ce12ee3177fe2b503e8263806",
-   "refs/tags/carry/1.1.1zi-jz3": "c7dabe365ed846f9a2196a3c5cd55944d3586fb6"
+   "refs/tags/carry/1.1.1zi-jz3": "c7dabe365ed846f9a2196a3c5cd55944d3586fb6",
+   "refs/tags/carry/1.1.1zj-jz1": "a8e6a73820445f647002637b9930e7e36817724a"
   },
   "refs_note": "Commit ids; for an annotated tag the peeled commit. carry/1.1.1zi-jz2 is a signed annotated tag on d952ab0f (from U5). The 1.1.1*-carry branch heads move (README, CI) and are not pinned."
  },
