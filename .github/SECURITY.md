@@ -4,7 +4,7 @@
 |---|---|
 | the current `1.1.1*-carry` branch (the default branch, now `1.1.1zj-carry`) and the newest `carry/*` tag | fixes accepted |
 | older `carry/*` tags and older `1.1.1*-carry` branches | not updated; move to the newest tag |
-| `OpenSSL_1_1_1-continued`, `tarball/*` | OpenSSL's code as released; never changed here |
+| `OpenSSL_1_1_1-continued`, `tarball/*` | OpenSSL's code as released; a new release import is added on top, nothing is edited |
 | `tools` | the import and watch tooling; fixes accepted |
 
 ## Where to report

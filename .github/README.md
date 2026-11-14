@@ -116,20 +116,18 @@ the symbol versions are unchanged, so it's a drop-in for 1.1.1 consumers.
   `57facda29610d2f4964569c34df4ab9ba5536ab9121db18aa3264ceda7c82192`; `SHA256SUMS.sig` signs its
   checksum. (`openssl-1.1.1zi-jz3.tar.gz`: `1c693f27e23a541cf649275bdffdbd0c70ae1dc6c4b215b798e9810c5c33578f`.) GitHub's automatic "Source code" archives use another prefix and aren't byte-stable.
 - **The release commits:** each tree comes from an Amazon Linux 2 `openssl11` source RPM. Their
-  signatures check against Amazon's key `99E6 17FE 5DB5 27C0 D8BD 5F8E 11CF 1F95 C87F 5B1A`, which was
-  fetched from a public keyserver and is not independently anchored. OpenSSL publishes no signatures or
+  signatures check against Amazon's key `99E6 17FE 5DB5 27C0 D8BD 5F8E 11CF 1F95 C87F 5B1A`, which Amazon
+  serves at `https://cdn.amazonlinux.com/_assets/11CF1F95C87F5B1A.asc` (a public keyserver gives the same key). OpenSSL publishes no signatures or
   checksums for these releases. 1.1.1za and 1.1.1zf are Amazon repacks: same content, different archive
-  bytes. The `tools` branch re-checks all of it:
+  bytes. The `tools` branch re-checks all of it in one command (it needs git, curl, gpg and Python 3, and
+  downloads every pinned input from Amazon's blobstore and openssl.org):
   ```
   git fetch origin tools && git worktree add ../tools tools && cd ../tools
-  python3 tools/import_release.py rpm-verify SRPM --key keys/amazon-linux-2-99E617FE5DB527C0D8BD5F8E11CF1F95C87F5B1A.asc
-  python3 tools/import_release.py tree-check --git-archive REPO tarball/1.1.1zj openssl-1.1.1zj.tar.gz
-  MIRROR_DL=dl MIRROR_REPO=/tmp/reimport python3 tools/build_mirror.py --result reimport.json
-  git ls-remote https://github.com/JohnsterID/openssl-1.1.1-continued.git > ls-remote.txt
-  python3 tools/build_mirror.py --compare reimport.json --refs ls-remote.txt
+  tools/provenance.sh --full
   ```
-  A re-import from the source RPMs into an empty repository gives the same commit ids as
-  `OpenSSL_1_1_1-continued` and the `tarball/*` tags. `releases.json` pins every input:
+  It checks each source RPM's signatures and checksum, compares every `tarball/*` tag with its tarball
+  (`git archive`), re-imports all releases into an empty repository and compares the commit ids with the
+  published `OpenSSL_1_1_1-continued` and `tarball/*`, and re-makes each carry release asset. `releases.json` pins every input:
 
 | Release | Source RPM | RPM sha256 | Tarball sha256 |
 |---|---|---|---|
