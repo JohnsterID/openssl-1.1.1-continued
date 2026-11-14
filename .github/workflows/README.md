@@ -21,12 +21,16 @@ fork's own refs. A change turns the run red until the maintainer reviews it and 
 activity; the maintainer re-enables it, and runs the same script by hand meanwhile.
 
 OpenSSL's six 1.1.1 workflows (`ci.yml`, `cross-compiles.yml`, `macos.yml`, `run-checker-ci.yml`,
-`run-checker-merge.yml` and `windows.yml`) were removed here, and are disabled in the repository settings.
+`run-checker-merge.yml` and `windows.yml`) were removed here. They were never registered on this
+repository, so they can't be disabled one by one, and they still run on any push of a commit that holds
+them (`on: push`, tags included): the release imports on `OpenSSL_1_1_1-continued` and the `tarball/*`
+tags. Actions is turned off for those pushes (`RELEASING.md` step 4 on `tools`), and from
+`carry/1.1.1zi-jz3` on, carry tags sit on commits without them.
 Every job in them asks for OpenSSL's self-hosted runners (`ubuntu-22.04-self-hosted`,
 `windows-server-2022-self-hosted`, `w-mac-mini-*`), which a fork doesn't have. Several also use actions
 that exist only in OpenSSL's own setup (`actions/ilammy-msvc-dev-cmd`, `actions/ilammy-setup-nasm`,
 `actions/perl-actions-install-with-cpanm`, `actions/actions-rs-toolchain`). The originals stay on
-`OpenSSL_1_1_1-continued`, which is never changed.
+`OpenSSL_1_1_1-continued`, which only moves by a fast-forward to each new release import.
 
 Everything in `.github/` is export-ignored, so this directory never changes a `git archive` tarball or a
 build.
