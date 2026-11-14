@@ -7,6 +7,30 @@
  https://github.com/openssl/openssl/commits/ and pick the appropriate
  release branch.
 
+ Changes between 1.1.1zj and 1.1.1zj-jz1 [14 Nov 2026]
+
+ *) EC key generation fails with EC_R_INVALID_GROUP_ORDER instead of
+    looping forever when the group order is 1 or less. CMS_encrypt() to a
+    recipient certificate with such a group could hang in key generation.
+    (CVE-2026-107496)
+    [1.1.1 backport of Jakub Zelenka's openssl-4.0 a8531368dd; not reviewed
+    by OpenSSL]
+
+ *) Completed the fix for CVE-2025-69419: OPENSSL_uni2utf8() and
+    PKCS12 friendly names now convert BMP strings with characters
+    that need three UTF-8 bytes instead of failing.
+    (CVE-2025-69419)
+    [Bernd Edlinger; carried from openssl-3.0 4191043c36]
+
+ *) On Linux C libraries other than glibc (in practice musl), the ARM and
+    AArch64 capability setup reads AT_HWCAP with getauxval() instead of
+    probing NEON and the ARMv8 crypto instructions under a SIGILL handler.
+    On a kernel built without VFP/NEON support the probe passed on one
+    core and failed on another, and a process that later ran a NEON
+    routine on the other core died with SIGILL. glibc, Android and BSD
+    builds are unchanged.
+    [Fork-specific portability fix; not in any OpenSSL release]
+
  Changes between 1.1.1zi and 1.1.1zj [29 Sep 2026]
 
  *) Fixed DTLS retransmissions of handshake messages from a stale buffer offset.
