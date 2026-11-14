@@ -46,7 +46,7 @@ require signed commits.
    the ids must agree. Push the new import commit to `OpenSSL_1_1_1-continued` and its `tarball/1.1.1zX`
    tag (signed tag from this release on). The six upstream workflows are disabled in the repository
    settings, so the push starts nothing.
-5. Reconcile the carry: diff 1.1.1zi plus the carried fixes against the new tarball, limited to the
+5. Reconcile the carry: diff the previous release plus the carried fixes against the new tarball, limited to the
    files the fixes touch. For each fix: keep OpenSSL's code where it differs, drop our backport once
    OpenSSL's release contains the fix, and record the comparison (a semantic difference from our port is
    worth a note to openssl-security@openssl.org). Never write "fixed in 1.1.1zX" for our own backports.
