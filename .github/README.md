@@ -15,7 +15,7 @@ or in OpenSSL's public git. The source of several of them is publicly redistribu
 
 | Ref | What it is |
 |---|---|
-| `OpenSSL_1_1_1-continued` | OpenSSL's public `OpenSSL_1_1_1-stable` history. Then OpenSSL's own commits after 1.1.1w that are reachable by SHA in `openssl/openssl`, kept unchanged with their original authors and ids (1.1.1x, 1.1.1y and the first 1.1.1za fix). Then one commit per release: 1.1.1za, zb, zd, zf, zg, zh, zi. |
+| `OpenSSL_1_1_1-continued` | OpenSSL's public `OpenSSL_1_1_1-stable` history. Then OpenSSL's own commits after 1.1.1w that are reachable by SHA in `openssl/openssl`, kept unchanged with their original authors and ids (1.1.1x, 1.1.1y and the first 1.1.1za fix). Then one commit per release: 1.1.1za, zb, zd, zf, zg, zh, zi, zj. |
 | `tarball/1.1.1zX` | The release commits on `OpenSSL_1_1_1-continued`. `git archive tarball/1.1.1zX` equals that release's tarball content, file for file. |
 | `1.1.1zj-carry` (default branch) | 1.1.1zj plus the three carried changes below, plus a distinct version text. |
 | `carry/1.1.1zj-jz1` | The current tagged carry release: 1.1.1zj plus carried changes 1, 7 and 8. Signed tag. |
